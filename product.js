@@ -29,7 +29,8 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema);
 
-const bike = new Product({ name: 'Mountain Bike', price: 1986, categories: ['cycling', 'sports'] });
+const bike = new Product({ name: 'Mountain Bike', price: 999, categories: ['cycling', 'sports'] });
+
 bike
   .save()
   .then((data) => {
@@ -38,5 +39,17 @@ bike
   })
   .catch((error) => {
     console.log('Save failed!');
+    console.log(error);
+  });
+
+// Need to explicitly set runValidators!
+Product.findOneAndUpdate({ name: 'Mountain Bike' }, { price: 899 }, { new: true, runValidators: true })
+  .save()
+  .then((data) => {
+    console.log('Success!');
+    console.log(data);
+  })
+  .catch((error) => {
+    console.log('Failed!');
     console.log(error);
   });
