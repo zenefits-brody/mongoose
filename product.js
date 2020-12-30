@@ -11,13 +11,25 @@ mongoose
   });
 
 const productSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  price: { type: Number, required: true },
+  name: { type: String, required: true, maxlength: 20 },
+  price: { type: Number, required: true, min: 0 },
+  onSale: { type: Boolean, default: false },
+  categories: [String],
+  quantity: {
+    online: {
+      type: Number,
+      default: 0,
+    },
+    inStore: {
+      type: Number,
+      default: 0,
+    },
+  },
 });
 
 const Product = mongoose.model('Product', productSchema);
 
-const bike = new Product({ name: 'Mountain Bike', price: 1986 });
+const bike = new Product({ name: 'Mountain Bike', price: 1986, categories: ['cycling', 'sports'] });
 bike
   .save()
   .then((data) => {
