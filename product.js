@@ -12,7 +12,7 @@ mongoose
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true, maxlength: 20 },
-  price: { type: Number, required: true, min: 0 },
+  price: { type: Number, required: true, min: [0, 'Price must be positive.'] },
   onSale: { type: Boolean, default: false },
   categories: [String],
   quantity: {
@@ -25,7 +25,23 @@ const productSchema = new mongoose.Schema({
       default: 0,
     },
   },
+  size: {
+    type: String,
+    enum: ['XS', 'S', 'M', 'L', 'XL'],
+  },
 });
+
+// Add an instance method.
+// Not using arrow function so that `this` will be the instance.
+productSchema.methods.toggleOnSale = function () {
+  this.onSale = !this.onSale;
+  return this.save();
+};
+
+// Add a static method.
+productSchema.statics.fireSale = function () {
+  return this.updateMany({}, { onSale: true });
+};
 
 const Product = mongoose.model('Product', productSchema);
 
